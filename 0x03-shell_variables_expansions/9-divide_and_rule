@@ -1,2 +1,2 @@
 #!/bin/bash
-za"ma
+echo $((POWER / DIVIDE))
