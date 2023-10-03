@@ -1,16 +1,39 @@
 #!/bin/bash
 
-# Check if the log file is provided as an argument
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <log_file>"
-    exit 1
-fi
+# Get the Apache log file as input.
+INPUT_FILE=$1
 
-# Log file provided as argument
-log_file="$1"
+# Create a dictionary to store the grouped data.
+DATA_DICT=()
 
-# Use awk to process the log file, group by IP and HTTP status code, and count occurrences
-awk '{ ip_count[$1" "$9]++ } END { for (pair in ip_count) print ip_count[pair], pair }' "$log_file" |
-# Sort the output by the number of occurrences in descending order
-awk '{ print $1, $2, $3 }' | sort -nr
+# Read the Apache log file line by line.
+while read LINE; do
+
+    # Split the line into individual fields.
+    FIELDS=($LINE)
+
+    # Get the IP address and HTTP status code from the fields.
+    IP_ADDRESS=${FIELDS[0]}
+    HTTP_STATUS_CODE=${FIELDS[9]}
+
+    # Increment the counter for the corresponding IP address and HTTP status code.
+    DATA_DICT[$IP_ADDRESS,$HTTP_STATUS_CODE]=$((${DATA_DICT[$IP_ADDRESS,$HTTP_STATUS_CODE]}+1))
+
+done < "$INPUT_FILE"
+
+# Sort the grouped data by the number of occurrences in descending order.
+SORTED_DATA=$(sort -r -k 1,1 "${DATA_DICT[@]}")
+
+# Display the grouped data in the required format.
+for ITEM in $SORTED_DATA; do
+
+    # Split the item into its individual components.
+    OCCURENCE_NUMBER=$(echo $ITEM | cut -d, -f1)
+    IP_ADDRESS=$(echo $ITEM | cut -d, -f2)
+    HTTP_STATUS_CODE=$(echo $ITEM | cut -d, -f3)
+
+    # Display the grouped data.
+    echo "$OCCURENCE_NUMBER $IP_ADDRESS $HTTP_STATUS_CODE"
+
+done
 
