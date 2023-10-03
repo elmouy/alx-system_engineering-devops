@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Check if the log file is provided as an argument
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <log_file>"
+    exit 1
+fi
+
+# Log file provided as argument
+log_file="$1"
+
+# Use awk to process the log file, group by IP and HTTP status code, and count occurrences
+awk '{ ip_count[$1" "$9]++ } END { for (pair in ip_count) print ip_count[pair], pair }' "$log_file" |
+# Sort the output by the number of occurrences in descending order
+awk '{ print $1, $2, $3 }' | sort -nr
+
