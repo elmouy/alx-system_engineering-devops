@@ -10,7 +10,7 @@ def number_of_subscribers(subreddit):
     subscribers of a subreddit passed to it"""
 
     apiUrl = "https://reddit.com/r/{}/about.json".format(subreddit)
-    userAgent = "Mozilla/5.0"
+    userAgent = "Google Chrome/120.0.6099.217"
 
     response = requests.get(apiUrl, headers={"user-agent": userAgent})
     if not response:
