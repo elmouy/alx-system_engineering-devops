@@ -1,24 +1,12 @@
-import requests
+#!/usr/bin/python3
+"""
+0-main
+"""
+import sys
 
-def number_of_subscribers(subreddit):
-    """Queries the Reddit API for the number of subscribers of a given subreddit.
-
-    Args:
-        subreddit (str): The name of the subreddit to query.
-
-    Returns:
-        int: The number of subscribers, or 0 if the subreddit is invalid or an error occurs.
-    """
-
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {"User-Agent": "YourAppName/0.1"}  # Set a custom User-Agent
-
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for non-200 status codes
-
-        data = response.json()
-        return data.get("data", {}).get("subscribers", 0)
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching subreddit data: {e}")
-        return 0
+if __name__ == '__main__':
+    number_of_subscribers = __import__('0-subs').number_of_subscribers
+    if len(sys.argv) < 2:
+        print("Please pass an argument for the subreddit to search.")
+    else:
+        print("{:d}".format(number_of_subscribers(sys.argv[1])))

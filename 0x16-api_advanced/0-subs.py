@@ -2,16 +2,27 @@
 """
 Contains number_of_subscribers function
 """
-
 import requests
 
-
 def number_of_subscribers(subreddit):
-    """returns the number of subscribers for a given subreddit"""
-    if subreddit is None or type(subreddit) is not str:
+    """Queries the Reddit API for the number of subscribers of a given subreddit.
+
+    Args:
+        subreddit (str): The name of the subreddit to query.
+
+    Returns:
+        int: The number of subscribers, or 0 if the subreddit is invalid or an error occurs.
+    """
+
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {"User-Agent": "YourAppName/0.1"}  # Set a custom User-Agent
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for non-200 status codes
+
+        data = response.json()
+        return data.get("data", {}).get("subscribers", 0)
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching subreddit data: {e}")
         return 0
-    r = requests.get('http://www.reddit.com/r/{}/about.json'.format(subreddit),
-                     headers={'User-Agent': '0x16-api_advanced:project:\
-v1.0.0 (by /u/firdaus_cartoon_jr)'}).json()
-    subs = r.get("data", {}).get("subscribers", 0)
-    return subs
