@@ -1,33 +1,57 @@
-Postmortem
-This project contains tasks for learning about writing a postmortem.
+Postmortem: Web Stack Outage Incident
 
-Tasks To Complete
- 0. My first postmortem
-My_first_postmortemcontains a blog post that meets the following requirements:
+Issue Summary: Duration:
 
-INFO:
-Using one of the web stack debugging project issue or an outage you have personally face, write a postmortem. Most of you will never have faced an outage, so just get creative and invent your own :)
-While postmortem format can vary, stick to this one so that you can get properly reviewed by your peers.
-Requirements:
-Issue Summary (that is often what executives will read) must contain:
-Duration of the outage with start and end times (including timezone).
-What was the impact? (What service was down/slow? What were user experiencing? How many % of the users were affected?)
-What was the root cause?
-Timeline (format bullet point, format: time - keep it short, 1 or 2 sentences) must contain:
-When was the issue detected?
-How was the issue detected (monitoring alert, an engineer noticed something, a customer complained…)
-Actions taken (what parts of the system were investigated, what were the assumption on the root cause of the issue).
-Misleading investigation/debugging paths that were taken.
-Which team/individuals was the incident escalated to?
-How the incident was resolved.
-Root cause and resolution must contain:
-Explain in detail what was causing the issue.
-Explain in detail how the issue was fixed.
-Corrective and preventative measures must contain:
-What are the things that can be improved/fixed (broadly speaking)
-A list of tasks to address the issue (be very specific, like a TODO, example: patch Nginx server, add monitoring on server memory…).
-Be brief and straight to the point, between 400 to 600 words
- 1. Make people want to read your postmortem
+Start Time: january 22, 2024, 09:30 AM (UTC)
 
-We are constantly stormed by a quantity of information, it’s tough to get people to read you.
-Make your post-mortem attractive by adding humour, a pretty diagram or anything that would catch your audience attention.
+End Time: january 22, 2024, 11:45 AM (UTC)
+
+Impact:
+
+The outage affected the core authentication service, rendering user logins and account access unavailable for 30% of our user base. Users experienced authentication errors and were unable to perform actions requiring authentication during the incident.
+
+Root Cause:
+
+The root cause was identified as a misconfiguration in the authentication service database connection pool settings, leading to a rapid depletion of available connections.
+
+Timeline:
+
+09:30 AM: Issue detected through monitoring alerts indicating a sudden spike in authentication errors.
+
+09:35 AM: Investigation initiated by the operations team to identify the source of the increased error rate.
+
+09:50 AM: Initial assumption made that the issue was related to network connectivity or database performance. Network logs and database metrics analyzed.
+
+10:15 AM: Misleading investigation path as database metrics showed no signs of performance degradation. Focus shifted towards load balancer configuration.
+
+10:40 AM: Issue escalated to the database team as load balancer configuration appeared normal. Database team identified the connection pool misconfiguration as the likely cause.
+
+11:00 AM: Corrective action taken to adjust the authentication service database connection pool settings.
+
+11:45 AM: Service fully restored after the corrective action, and monitoring confirmed a significant reduction in authentication errors.
+
+Root Cause and Resolution:
+
+Root Cause: The misconfiguration in the authentication service database connection pool settings led to an excessive number of open connections, causing the database to reject new connection attempts and resulting in authentication errors for users.
+
+Resolution: The issue was resolved by promptly adjusting the connection pool settings to ensure a proper balance between connection availability and resource utilization. This adjustment prevented the rapid depletion of connections and restored normal operation of the authentication service.
+
+Corrective and Preventative Measures:
+
+Improvements/Fixes:
+
+Conduct a comprehensive review of all critical service configurations to identify and address potential misconfigurations.
+
+Implement additional monitoring for connection pool usage and set up automated alerts for abnormal patterns.
+
+Tasks to Address the Issue:
+
+Schedule regular configuration reviews for critical services, focusing on potential points of failure.
+
+Enhance documentation regarding database connection pool settings to facilitate quicker diagnosis and resolution of similar issues in the future.
+
+Conduct a post-incident review with the operations and database teams to share insights and improve collaboration in handling similar incidents.
+
+Explore the possibility of implementing automated rollback procedures for critical configurations to minimize downtime during corrective actions.
+
+Conclusion This postmortem provides a detailed account of the outage incident, its impact, the timeline of detection and resolution, the root cause, and the measures taken to prevent a recurrence. Through this analysis, we aim to improve our system’s resilience and response mechanisms, ensuring a more robust and reliable service for our users.
